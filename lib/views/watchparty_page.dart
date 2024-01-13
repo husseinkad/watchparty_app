@@ -1,7 +1,10 @@
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:video_player/video_player.dart';
+import 'package:watchparty_app/utlies/custom_textstyles.dart';
 
+import '../controllers/video_controller.dart';
+import '../widgets/chat_widget.dart';
 
 class WatchPartyViewPage extends StatelessWidget {
   final VideoController videoController = Get.put(VideoController());
@@ -12,72 +15,82 @@ class WatchPartyViewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Watch Party View'),
+        title: const Text('Watch Party View', style: CustomTextStyles.defaultTextStyle,),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: VideoPlayer(videoController.videoController),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                      ),
-                      itemCount: videoController.chairs.length,
-                      itemBuilder: (context, index) {
-                        return Chair(user: videoController.chairs[index]);
-                      },
-                    ),
-                  ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  child: FlickVideoPlayer(
+                      flickManager: videoController.flickManager)),
             ),
-          ),
-        ],
+           // ,
+      Obx(() => SizedBox(
+              height: MediaQuery.of(context).size.height * 0.58,
+                child: videoController.isButtonPressed.value == true? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ChatWidget(),
+                ): chairsView(videoController, context)))
+          ],
+        ),
       ),
     );
   }
 }
 
-class VideoController extends GetxController {
-  late VideoPlayerController videoController;
+Widget chairsView(videoController, context){
+  return  Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text('TV Series Marathon', style: CustomTextStyles.titleTextStyle,),
+      ),
+      const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text('Breaking Bad by Jane Smith', style: CustomTextStyles.headlineTextStyle,),
+      ),
+      SizedBox(
+        height: MediaQuery.of(context).size.height * 0.345,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 8.0,
+          ),
+          itemCount: videoController.chairs.length,
+          itemBuilder: (context, index) {
+            return Chair(user: videoController.chairs[index]);
+          },
+        ),
+      ),
+      GestureDetector(
+        onTap: (){
+          videoController.isButtonPressed.value = !videoController.isButtonPressed.value;
+        },
+        child: Center(
+          child: Container(
+            height:  40,
+            width:  MediaQuery.of(context).size.width * 0.95,
+            decoration: BoxDecoration(
+              color: Colors.lightBlue[200],
+            ),
+            child: const Center(
+              child:  Text('Chat'),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 
-  List<String> chairs = <String>[].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    videoController = VideoPlayerController.network(
-      'https://www.example.com/sample.mp4', // Replace with your video URL
-    )..initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized
-      update();
-      videoController.play();
-    });
-
-    // Simulating users joining the watch party
-    Future.delayed(const Duration(seconds: 2), () {
-      chairs.addAll(['User 1', 'User 2', 'User 3', 'User 4', 'User 5', 'User 6']);
-      update();
-    });
-  }
-
-  @override
-  void onClose() {
-    videoController.dispose();
-    super.onClose();
-  }
 }
 
 class Chair extends StatelessWidget {
-  final String user;
+  final UserModel user;
 
   Chair({super.key, required this.user});
 
@@ -87,14 +100,14 @@ class Chair extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const CircleAvatar(
+           CircleAvatar(
             radius: 30.0,
             backgroundImage: NetworkImage(
-              'https://i.guim.co.uk/img/media/66767bbb27ae0e99d0dfb2975ff2a2b3db9e1c93/37_6_1612_967/master/1612.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=2a212447d637483b953a4e91b042f0ce',
+              user.imageUrl,
             ),
           ),
-          const SizedBox(height: 8.0),
-          Text(user),
+          const SizedBox(height: 4.0),
+          Text(user.name, style: const TextStyle(fontSize: 13, fontFamily: 'Poppins'),),
         ],
       ),
     );

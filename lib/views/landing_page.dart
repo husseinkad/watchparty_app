@@ -6,6 +6,8 @@ import 'package:watchparty_app/views/login_page.dart';
 import 'package:watchparty_app/views/signup_page.dart';
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -37,7 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.6
   flutter_svg: ^2.0.9
+  flick_video_player: ^0.6.0
+  file_picker: ^5.2.10
   video_player: ^2.8.2
+  shared_preferences: ^2.2.2
+  http: ^1.1.2
+
 
 dev_dependencies:
   flutter_test:

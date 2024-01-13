@@ -7,43 +7,80 @@ import '../utlies/custom_textstyles.dart';
 
 class LoginPage extends StatelessWidget {
   final LoginController loginController = Get.put(LoginController());
-  LoginPage({super.key});
+  LoginPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login',  style: CustomTextStyles.titleTextStyle,),
+        title: const Text('Login', style: CustomTextStyles.titleTextStyle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset('assets/loginPageLogo.svg', width: 250,),
-            ),
-            const SizedBox(height: 40,),
-            TextField(
-              controller: loginController.usernameController,
-              style: CustomTextStyles.defaultTextStyle,
-              decoration: const InputDecoration(labelText: 'Username'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: loginController.passwordController,
-              obscureText: true,
-              style: CustomTextStyles.defaultTextStyle,
-              decoration: const InputDecoration(labelText: 'Password'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: loginController.login,
-              child: const Text('Login',  style: CustomTextStyles.defaultTextStyle,),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset('assets/loginPageLogo.svg', width: 250,),
+                ),
+              ),
+              const SizedBox(height: 40,),
+              _buildTextField(
+                controller: loginController.emailController,
+                labelText: 'Email',
+                context: context,
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: loginController.passwordController,
+                labelText: 'Password',
+                obscureText: true,
+                context: context,
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: loginController.login,
+                  style: ElevatedButton.styleFrom(
+                    textStyle: CustomTextStyles.defaultTextStyle,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: const Text('Login'),
+                ),
+
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required BuildContext context,
+    bool obscureText = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      style: CustomTextStyles.defaultTextStyle,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
       ),
     );
   }

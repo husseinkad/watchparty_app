@@ -5,10 +5,13 @@ import 'package:watchparty_app/utlies/custom_textstyles.dart';
 import 'package:watchparty_app/views/profile_page.dart';
 import 'package:watchparty_app/views/watchparty_page.dart';
 
-import '../utlies/Logic.dart';
+import '../controllers/filepicker_controller.dart';
+import '../utlies/dialogs.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+   HomePage({super.key});
+
+  final FilePickerController controller = Get.put(FilePickerController());
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +35,14 @@ class HomePage extends StatelessWidget {
             ],
           ),
           child: GestureDetector(
-            onTap: () => Get.to(ProfilePage()),
+            onTap: () => Get.to(const ProfilePage()),
             child: ClipOval(
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
                 color: Colors.white,
                 child: Image.network(
-                  'https://i.guim.co.uk/img/media/66767bbb27ae0e99d0dfb2975ff2a2b3db9e1c93/37_6_1612_967/master/1612.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=2a212447d637483b953a4e91b042f0ce',
+                  'https://cdn.vox-cdn.com/thumbor/S7APkbn99b1oVsds_1JBhvdzsWU=/0x0:2000x1000/1400x1400/filters:focal(814x298:815x299)/cdn.vox-cdn.com/uploads/chorus_asset/file/10440907/Thanos_MCU.jpg',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -52,7 +55,7 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: IconButton(
             onPressed: () {
-              showUploadVideoDialog(context);
+              showUploadVideoDialog(context, controller);
             },
             icon: const Icon(Icons.video_call_outlined, size: 30),
           ),
@@ -77,6 +80,8 @@ class HomePage extends StatelessWidget {
 }
 
 class JoinWatchPartyButton extends StatelessWidget {
+  const JoinWatchPartyButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -110,8 +115,14 @@ class PartyList extends StatelessWidget {
     List<Party> parties = [
       Party('Movie Night', 'Action Movie', 'John Doe'),
       Party('TV Series Marathon', 'Breaking Bad', 'Jane Smith'),
+      Party('Beach BBQ', 'Grilled Delights', 'Emma Davis'),
+      Party('Pizza and Chill', 'Comedy Movie', 'Mike Miller'),
+      Party('Outdoor Adventure', 'Hiking and Camping', 'David White'),
+      Party('Gaming Marathon', 'Video Games', 'Mark Turner'),
+
       // Add more parties as needed.
     ];
+
 
     return ListView.builder(
       itemCount: parties.length,
